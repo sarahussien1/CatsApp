@@ -11,7 +11,7 @@ composeBom = "2024.04.01"
 retrofitVersion= "2.11.0"
 okHttpVersion = "4.12.0"
 room = "2.6.1"
-hilt = "2.44"
+hilt = "2.51.1"
 glide = "4.16.0"
 navigation = "2.8.4"
 
@@ -49,4 +49,3 @@ root-level-hilt-plugin = {id = "com.google.dagger.hilt.android", version.ref = "
 app-level-hilt-plugin = {id = "dagger.hilt.android.plugin"}
 root-level-ksp =  {id = "com.google.devtools.ksp", version = "2.0.21-1.0.27"}
 app-level-ksp = {id = "com.google.devtools.ksp"}
-kapt = {id = "kotlin-kapt"}
