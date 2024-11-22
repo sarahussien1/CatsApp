@@ -3,7 +3,8 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.app.level.hilt.plugin) // Hilt plugin
-    alias(libs.plugins.app.level.ksp) // Needed for both hilt and room
+    alias(libs.plugins.kapt) // Needed for hilt
+    alias(libs.plugins.app.level.ksp) // Needed for room
 }
 
 android {
@@ -59,7 +60,7 @@ dependencies {
     implementation(libs.room.ktx)
     ksp(libs.room.compiler)
     implementation(libs.hilt.android)
-    ksp(libs.hilt.compiler)
+    kapt(libs.hilt.compiler)
     implementation(libs.glide)
     implementation(libs.navigation.component)
     testImplementation(libs.junit)

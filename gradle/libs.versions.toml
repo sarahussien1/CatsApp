@@ -49,3 +49,4 @@ root-level-hilt-plugin = {id = "com.google.dagger.hilt.android", version.ref = "
 app-level-hilt-plugin = {id = "dagger.hilt.android.plugin"}
 root-level-ksp =  {id = "com.google.devtools.ksp", version = "2.0.21-1.0.27"}
 app-level-ksp = {id = "com.google.devtools.ksp"}
+kapt = {id = "kotlin-kapt"}
