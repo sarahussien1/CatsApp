@@ -3,7 +3,6 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.app.level.hilt.plugin) // Hilt plugin
-    alias(libs.plugins.kapt) // Needed for hilt
     alias(libs.plugins.app.level.ksp) // Needed for room
 }
 
@@ -20,9 +19,14 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
-
+    buildFeatures.buildConfig =  true
     buildTypes {
+        debug {
+            buildConfigField("String", "BASE_URL", "\"https://api.thecatapi.com/\"")
+        }
+
         release {
+            buildConfigField("String", "BASE_URL", "\"https://api.thecatapi.com/\"")
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -60,7 +64,7 @@ dependencies {
     implementation(libs.room.ktx)
     ksp(libs.room.compiler)
     implementation(libs.hilt.android)
-    kapt(libs.hilt.compiler)
+    ksp(libs.hilt.compiler)
     implementation(libs.glide)
     implementation(libs.navigation.component)
     testImplementation(libs.junit)
