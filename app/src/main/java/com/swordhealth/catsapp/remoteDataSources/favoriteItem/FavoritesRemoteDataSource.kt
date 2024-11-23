@@ -11,12 +11,11 @@ import com.swordhealth.catsapp.utils.NetworkConnectivity
 import com.swordhealth.catsapp.utils.Resource
 import javax.inject.Inject
 
-//TODO: provide this remote data source
 class FavoritesRemoteDataSource @Inject constructor(
     private val context: Context,
     private val networkConnectivity: NetworkConnectivity,
     private val favoritesApiService: FavoritesApiService
-) : FavoritesDataSource {
+) : FavoritesRemoteDataContract {
     override suspend fun getFavorites(subId: String): Resource<List<FavoriteItem>> {
         if (!networkConnectivity.isConnected()) {
             return Resource.DataError(context.getString(R.string.no_internet_error))
@@ -25,7 +24,7 @@ class FavoritesRemoteDataSource @Inject constructor(
         return if (response.isSuccessful) {
             Resource.Success(response.body() as List<FavoriteItem>)
         } else {
-            Resource.DataError(response.message() ?: context.getString(R.string.network_error))
+            Resource.DataError(response.message() ?: context.getString(R.string.data_error))
         }
     }
 
@@ -37,7 +36,7 @@ class FavoritesRemoteDataSource @Inject constructor(
         return if (response.isSuccessful) {
             Resource.Success(response.body() as AddToFavResponse)
         } else {
-            Resource.DataError(response.message() ?: context.getString(R.string.network_error))
+            Resource.DataError(response.message() ?: context.getString(R.string.data_error))
         }
     }
 
@@ -49,7 +48,7 @@ class FavoritesRemoteDataSource @Inject constructor(
         return if (response.isSuccessful) {
             Resource.Success(response.body() as RemoveFromFavResponse)
         } else {
-            Resource.DataError(response.message() ?: context.getString(R.string.network_error))
+            Resource.DataError(response.message() ?: context.getString(R.string.data_error))
         }
     }
 }

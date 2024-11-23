@@ -3,7 +3,7 @@ package com.swordhealth.catsapp.remoteDataSources.cat
 import com.swordhealth.catsapp.models.Cat
 import com.swordhealth.catsapp.utils.Resource
 
-interface CatsDataSource {
+interface CatsRemoteDataContract {
     suspend fun getCats(
         size: String?,
         hasBreeds: Boolean?,

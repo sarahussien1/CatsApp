@@ -9,5 +9,6 @@ object Constants {
     const val CONNECT_TIMEOUT = 5L
     const val WRITE_TIMEOUT = 5L
     const val READ_TIMEOUT = 5L
+    const val SUB_ID = "my-user-1234"
 }
 

@@ -10,6 +10,6 @@ interface CatDao {
     @Upsert
     suspend fun upsertCats(cat: List<Cat>)
 
-    @Query("SELECT * FROM cats")
+    @Query("SELECT * FROM cats") //TODO: change this query to have the given parameters from repository
     suspend fun getAllCats(): List<Cat>
 }

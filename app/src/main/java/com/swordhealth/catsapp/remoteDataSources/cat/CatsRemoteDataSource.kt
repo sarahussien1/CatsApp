@@ -9,12 +9,11 @@ import com.swordhealth.catsapp.utils.Resource
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
-//TODO: provide this remote data source
 class CatsRemoteDataSource @Inject constructor(
     @ApplicationContext private val context: Context,
     private val networkConnectivity: NetworkConnectivity,
     private val catsApiService: CatsApiService
-) : CatsDataSource {
+) : CatsRemoteDataContract {
     override suspend fun getCats(
         size: String?,
         hasBreeds: Boolean?,
@@ -29,7 +28,7 @@ class CatsRemoteDataSource @Inject constructor(
         return if (response.isSuccessful) {
             Resource.Success(response.body() as List<Cat>)
         } else {
-            Resource.DataError(response.message() ?: context.getString(R.string.network_error))
+            Resource.DataError(response.message() ?: context.getString(R.string.data_error))
         }
     }
 }
