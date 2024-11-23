@@ -6,11 +6,12 @@ import com.swordhealth.catsapp.models.Cat
 import com.swordhealth.catsapp.services.CatsApiService
 import com.swordhealth.catsapp.utils.NetworkConnectivity
 import com.swordhealth.catsapp.utils.Resource
+import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
 //TODO: provide this remote data source
 class CatsRemoteDataSource @Inject constructor(
-    private val context: Context,
+    @ApplicationContext private val context: Context,
     private val networkConnectivity: NetworkConnectivity,
     private val catsApiService: CatsApiService
 ) : CatsDataSource {
