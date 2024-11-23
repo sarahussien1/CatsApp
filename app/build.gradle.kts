@@ -67,6 +67,7 @@ dependencies {
     ksp(libs.hilt.compiler)
     implementation(libs.glide)
     implementation(libs.navigation.component)
+    implementation(libs.type.converter)
     testImplementation(libs.junit)
     testImplementation(libs.mockito)
     testImplementation(libs.mock.web.server)

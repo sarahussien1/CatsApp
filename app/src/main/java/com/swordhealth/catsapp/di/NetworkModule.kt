@@ -67,6 +67,7 @@ object NetworkModule {
     @Provides
     fun provideGsonFactory(): Gson {
         return GsonBuilder()
+            .excludeFieldsWithoutExposeAnnotation()
             .setDateFormat("yyyy-MM-dd'T'HH:mm:ss")
             .create()
     }
