@@ -28,6 +28,7 @@ class CatRepository @Inject constructor(
                 val localResult = catsLocalDataSource.getCats(size,hasBreeds,order,page,limit)
                 if (localResult.data is List<Cat>) {
                     emit(localResult)
+                    return@flow
                 }
             }
             emit(remoteResult)
