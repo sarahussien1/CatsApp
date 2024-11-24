@@ -16,11 +16,13 @@ class FavoritesLocalDataSource @Inject constructor(
     private val favoritesDao: FavoriteItemDao,
     @ApplicationContext private val context: Context
 ) : FavoritesLocalDataContract {
-    override suspend fun upsertAll(favorites: List<FavoriteItem>) {
+    override suspend fun upsertAll(favorites: List<FavoriteItem>): Resource<Boolean> {
         return try {
             favoritesDao.upsertFavorites(favorites)
+            Resource.Success(true)
         } catch (exception: Exception) {
             exception.printStackTrace()
+            Resource.DataError(context.getString(R.string.data_error))
         }
     }
 
@@ -38,6 +40,7 @@ class FavoritesLocalDataSource @Inject constructor(
             favoritesDao.addToFavorite(FavoriteItem(id, favoriteRequest.imageId, favoriteRequest.subId ,Date()))
             Resource.Success(AddToFavResponse(message = "SUCCESS", id = id))
         } catch (exception: Exception) {
+            //TODO: cover tests here
             exception.printStackTrace()
             Resource.DataError(context.getString(R.string.data_error))
         }
