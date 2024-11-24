@@ -3,7 +3,6 @@ package com.swordhealth.catsapp.repositories.favoriteItem
 import com.swordhealth.catsapp.localDataSources.favoriteItem.FavoritesLocalDataContract
 import com.swordhealth.catsapp.models.AddToFavRequest
 import com.swordhealth.catsapp.models.AddToFavResponse
-import com.swordhealth.catsapp.models.Cat
 import com.swordhealth.catsapp.models.FavoriteItem
 import com.swordhealth.catsapp.models.RemoveFromFavResponse
 import com.swordhealth.catsapp.remoteDataSources.favoriteItem.FavoritesRemoteDataContract
@@ -11,9 +10,10 @@ import com.swordhealth.catsapp.utils.Resource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
-class FavoriteRepository (
+class FavoriteRepository @Inject constructor(
     private val favoritesRemoteDataSource: FavoritesRemoteDataContract,
     private val favoritesLocalDataSource: FavoritesLocalDataContract,
     private val ioDispatcher: CoroutineContext
@@ -25,6 +25,7 @@ class FavoriteRepository (
                 val localResult = favoritesLocalDataSource.getFavorites(subId)
                 if (localResult.data is List<FavoriteItem>) {
                     emit(localResult)
+                    return@flow
                 }
             }
             emit(remoteResult)

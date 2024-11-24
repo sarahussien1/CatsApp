@@ -10,5 +10,8 @@ object Constants {
     const val WRITE_TIMEOUT = 5L
     const val READ_TIMEOUT = 5L
     const val SUB_ID = "my-user-1234"
+    const val DEFAULT_SIZE = "med"
+    const val DEFAULT_HAS_BREEDS = true
+    const val DEFAULT_ORDER = "DESC"
 }
 

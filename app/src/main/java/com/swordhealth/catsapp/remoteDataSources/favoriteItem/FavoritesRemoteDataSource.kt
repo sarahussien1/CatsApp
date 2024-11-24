@@ -9,10 +9,11 @@ import com.swordhealth.catsapp.models.RemoveFromFavResponse
 import com.swordhealth.catsapp.services.FavoritesApiService
 import com.swordhealth.catsapp.utils.NetworkConnectivity
 import com.swordhealth.catsapp.utils.Resource
+import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
 class FavoritesRemoteDataSource @Inject constructor(
-    private val context: Context,
+    @ApplicationContext private val context: Context,
     private val networkConnectivity: NetworkConnectivity,
     private val favoritesApiService: FavoritesApiService
 ) : FavoritesRemoteDataContract {
