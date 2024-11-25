@@ -10,6 +10,8 @@ View Cats List (Remote Fallback to Local):
 - If the remote request fails, the app will fallback to a local database.
 - If neither remote nor local data is available, the user will be shown an error message.
 - The app ensures users always see a fresh, updated list of cats when online.
+- Phase 2 Enhancement:
+Pagination: For improved performance and scalability, implement pagination when fetching favorites, especially for large lists.
 
 Add/Remove Cat to/from Favorites Online:
 
@@ -26,12 +28,12 @@ View Favorites (Remote Fallback to Local):
 - Favorites are fetched from the remote server for consistency.
 - If remote access fails, the app falls back to local storage.
 - If both sources are unavailable, the user is notified of the failure.
-- Phase 2 Enhancement:
-Pagination: For improved performance and scalability, implement pagination when fetching favorites, especially for large lists.
 
 Search Cats (Local-Only):
 
 - Users can perform searches on the cat list, To optimize performance, search operations is conducted locally on the device.
+- Phase 2 Enhancement:
+Show recent 4 searches in the history for better search  experience 
 
 View Cat Details:
 
