@@ -9,10 +9,13 @@
 package com.swordhealth.catsapp.models
 
 import com.google.gson.annotations.Expose
+import com.google.gson.annotations.SerializedName
 
 data class AddToFavRequest (
     @Expose
+    @SerializedName("image_id")
     val imageId: String,
     @Expose
+    @SerializedName("sub_id")
     val subId: String
 )

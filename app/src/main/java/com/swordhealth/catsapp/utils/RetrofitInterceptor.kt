@@ -1,16 +1,17 @@
 package com.swordhealth.catsapp.utils
 
+import android.util.Log
 import okhttp3.Interceptor
 import okhttp3.Response
 
-class RetrofitInterceptor : Interceptor {
+class RetrofitInterceptor constructor() : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
-        val request = chain.request()
-        request
+        var request = chain.request()
+        request = request
             .newBuilder()
             .addHeader("x-api-key", Constants.API_KEY)
             .build()
-        val response = chain.proceed(request)
-        return response
+            val response = chain.proceed(request)
+            return response
     }
 }

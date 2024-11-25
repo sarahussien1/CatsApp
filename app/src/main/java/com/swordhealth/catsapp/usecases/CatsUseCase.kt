@@ -1,9 +1,11 @@
 package com.swordhealth.catsapp.usecases
 
+import androidx.compose.runtime.mutableStateOf
 import com.swordhealth.catsapp.repositories.cat.CatRepositoryContract
 import com.swordhealth.catsapp.repositories.favoriteItem.FavoriteRepositoryContract
 import com.swordhealth.catsapp.ui.models.CatUI
 import com.swordhealth.catsapp.utils.Resource
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import javax.inject.Inject
@@ -31,8 +33,8 @@ class CatsUseCase @Inject constructor(
             val catUis = cats.data?.map { cat ->
                 CatUI(
                     cat = cat,
-                    isFavorite = favoriteCatIds?.contains(cat.id) ?: false,
-                    favoriteID = if (favoriteCatIds?.contains(cat.id) == true) favoriteCatIds[cat.id] else null
+                    isFavorite = mutableStateOf(favoriteCatIds?.contains(cat.id) ?: false) ,
+                    favoriteID = mutableStateOf(if (favoriteCatIds?.contains(cat.id) == true) favoriteCatIds[cat.id] else null)
                 )
             }
             return@combine Resource.Success(catUis ?: listOf())

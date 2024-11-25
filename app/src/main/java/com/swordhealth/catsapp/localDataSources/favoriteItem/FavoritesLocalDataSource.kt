@@ -40,7 +40,6 @@ class FavoritesLocalDataSource @Inject constructor(
             favoritesDao.addToFavorite(FavoriteItem(id, favoriteRequest.imageId, favoriteRequest.subId ,Date()))
             Resource.Success(AddToFavResponse(message = "SUCCESS", id = id))
         } catch (exception: Exception) {
-            //TODO: cover tests here
             exception.printStackTrace()
             Resource.DataError(context.getString(R.string.data_error))
         }

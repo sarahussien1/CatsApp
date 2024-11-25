@@ -25,7 +25,11 @@ class CatsViewModel @Inject constructor(
     private val _cats = MutableStateFlow<Resource<List<CatUI>>>(Resource.Loading())
     val cats: StateFlow<Resource<List<CatUI>>> = _cats
     val page = 0
-    val limit = 100
+    val limit = 20
+
+    init {
+        getCats()
+    }
 
     fun getCats(
         imageSize: String? = Constants.DEFAULT_SIZE,
@@ -51,4 +55,25 @@ class CatsViewModel @Inject constructor(
                 }
         }
     }
+
+    fun notifyDataSetChanged() {
+        notifyDataSetChangedCats()
+//        notifyDataSetChangedFavs()
+    }
+
+    private fun notifyDataSetChangedCats() {
+        _cats.value.data?.let { list ->
+            _cats.value = Resource.Success(list)
+        }
+    }
+//    private fun notifyDataSetChangedFavs() {
+//        _filteredCats.value.data?.let { list ->
+//            _filteredCats.value = Resource.Success(list)
+//        }
+//    }
+
+    fun filterWithFavorites(catUIs: List<CatUI>): List<CatUI> {
+        return _cats.value.data?.filter { it.isFavorite.value } ?: listOf()
+    }
+
 }

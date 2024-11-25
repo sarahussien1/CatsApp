@@ -17,6 +17,6 @@ interface FavoriteItemDao {
     @Insert
     suspend fun addToFavorite(favorite: FavoriteItem)
 
-    @Query("DELETE FROM cats WHERE id = :favoriteId")
+    @Query("DELETE FROM favorites WHERE id = :favoriteId")
     suspend fun removeFromFavorite(favoriteId: Long)
 }

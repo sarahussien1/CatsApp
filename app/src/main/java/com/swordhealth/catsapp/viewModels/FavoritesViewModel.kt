@@ -1,6 +1,7 @@
 package com.swordhealth.catsapp.viewModels
 
 import android.content.Context
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.swordhealth.catsapp.R
@@ -10,7 +11,9 @@ import com.swordhealth.catsapp.ui.models.CatUI
 import com.swordhealth.catsapp.utils.Constants
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
@@ -21,28 +24,68 @@ class FavoritesViewModel @Inject constructor(
     private val repository: FavoriteRepositoryContract,
     @ApplicationContext private val context: Context
 ) : ViewModel() {
-
-    private val _toggleFavoriteFailure = MutableStateFlow<String?>(null)
-    val toggleFavoriteFailure: StateFlow<String?> = _toggleFavoriteFailure
-    val page = 0
-    val limit = 100
+    private val _toggleFavoriteFailure = MutableSharedFlow<String?>()
+    val toggleFavoriteFailure: SharedFlow<String?> = _toggleFavoriteFailure
+    private val _notifyDataSetChanged = MutableStateFlow<Boolean>(false)
+    val notifyDataSetChanged: StateFlow<Boolean> = _notifyDataSetChanged
 
     fun toggleFavorite(catUi: CatUI) {
         viewModelScope.launch {
-            if (catUi.isFavorite) { // remove from favorite
-                repository.removeFromFavorites(catUi.favoriteID!!)
+            val favoriteCurrentState = catUi.isFavorite.value
+            reflectOnToggleButtonActionInstantly(catUi)
+            if (favoriteCurrentState) { // remove from favorite
+                catUi.favoriteID.value?.let { id ->
+                    repository.removeFromFavorites(id)
+                        .catch { e ->
+                            e.printStackTrace()
+                            _toggleFavoriteFailure.emit(context.getString(R.string.data_error))
+                            catUi.isFavorite.value = true
+                            catUi.favoriteID.value = id
+                            _notifyDataSetChanged.value = true
+                        }
+                        .collect { toggleActionResource ->
+                            if (toggleActionResource.errorMessage != null) {
+                                _toggleFavoriteFailure.emit(toggleActionResource.errorMessage)
+                                clearButtonActionRemoveFavInFailure(catUi, id)
+                            } else {
+                                catUi.favoriteID.value = null
+                            }
+                        }
+                }
             } else { // add to favorite
                 repository.addToFavorite(AddToFavRequest(imageId = catUi.cat.id, Constants.SUB_ID))
-            }
-                .catch { e ->
-                    e.printStackTrace()
-                    _toggleFavoriteFailure.value = context.getString(R.string.data_error)
-                }
-                .collect { toggleActionResource ->
-                    if (toggleActionResource.errorMessage != null) {
-                        _toggleFavoriteFailure.value = toggleActionResource.errorMessage
+                    .catch { e ->
+                        e.printStackTrace()
+                        _toggleFavoriteFailure.emit(context.getString(R.string.data_error))
+                        clearButtonActionAddFavInFailure(catUi)
                     }
-                }
+                    .collect { toggleActionResource ->
+                        if (toggleActionResource.errorMessage != null) {
+                            _toggleFavoriteFailure.emit(toggleActionResource.errorMessage)
+                            clearButtonActionAddFavInFailure(catUi)
+                        } else {
+                            catUi.favoriteID.value = toggleActionResource.data?.id
+                        }
+                    }
+            }
+
         }
     }
+    private fun reflectOnToggleButtonActionInstantly(catUi: CatUI) {
+        catUi.isFavorite.value = !catUi.isFavorite.value
+        _notifyDataSetChanged.value = true
+    }
+
+    private fun clearButtonActionRemoveFavInFailure(catUi: CatUI, id: Long) {
+        catUi.isFavorite.value = true
+        catUi.favoriteID.value = id
+        _notifyDataSetChanged.value = true
+    }
+
+    private fun clearButtonActionAddFavInFailure(catUi: CatUI) {
+        catUi.favoriteID.value = null
+        catUi.isFavorite.value = false
+        _notifyDataSetChanged.value = true
+    }
+
 }

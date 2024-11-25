@@ -1,6 +1,7 @@
 package com.swordhealth.catsapp.remoteDataSources.favoriteItem
 
 import android.content.Context
+import android.util.Log
 import com.swordhealth.catsapp.R
 import com.swordhealth.catsapp.models.AddToFavRequest
 import com.swordhealth.catsapp.models.AddToFavResponse
@@ -37,7 +38,7 @@ class FavoritesRemoteDataSource @Inject constructor(
         return if (response.isSuccessful) {
             Resource.Success(response.body() as AddToFavResponse)
         } else {
-            Resource.DataError(response.message() ?: context.getString(R.string.data_error))
+            Resource.DataError(response.errorBody()?.string() ?: context.getString(R.string.data_error))
         }
     }
 
@@ -49,7 +50,7 @@ class FavoritesRemoteDataSource @Inject constructor(
         return if (response.isSuccessful) {
             Resource.Success(response.body() as RemoveFromFavResponse)
         } else {
-            Resource.DataError(response.message() ?: context.getString(R.string.data_error))
+            Resource.DataError(response.errorBody()?.string() ?: context.getString(R.string.data_error))
         }
     }
 }

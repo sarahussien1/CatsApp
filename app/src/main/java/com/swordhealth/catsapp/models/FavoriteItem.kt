@@ -11,6 +11,7 @@ package com.swordhealth.catsapp.models
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.Expose
+import com.google.gson.annotations.SerializedName
 import java.util.Date
 
 @Entity(tableName = "favorites")
@@ -19,9 +20,12 @@ data class FavoriteItem (
     @Expose
     val id :Long,
     @Expose
+    @SerializedName("image_id")
     val imageId: String,
     @Expose
+    @SerializedName("sub_id")
     val subId: String,
     @Expose
+    @SerializedName("created_at")
     val createdAt: Date
 )
