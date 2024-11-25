@@ -103,7 +103,7 @@ class FavoritesRepositoryTest {
         Mockito.`when`(favoritesRemoteDataSource.addToFavorite(addToFavRequest)).thenReturn(mockResource)
         val emissions = favoriteRepository.addToFavorite(addToFavRequest).toList()
 
-        assertEquals(mockResource, emissions)
+        assertEquals(listOf(mockResource) , emissions)
         // Verify upsert is called with remote data
         verify(favoritesLocalDataSource).addToFavorite(123456789, addToFavRequest)
     }
@@ -115,7 +115,7 @@ class FavoritesRepositoryTest {
         Mockito.`when`(favoritesRemoteDataSource.removeFromFavorites(123456789)).thenReturn(mockResource)
         val emissions = favoriteRepository.removeFromFavorites(123456789).toList()
 
-        assertEquals(mockResource, emissions)
+        assertEquals(listOf(mockResource) , emissions)
         // Verify upsert is called with remote data
         verify(favoritesLocalDataSource).removeFromFavorites(123456789)
     }
