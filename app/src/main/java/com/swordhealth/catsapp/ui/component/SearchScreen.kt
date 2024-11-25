@@ -81,7 +81,8 @@ fun SearchContent(padding: PaddingValues, catsViewModel: CatsViewModel, navContr
                         val catJson = gson.toJson(filteredCats[index].cat)
                         val encodedCatJson =
                             URLEncoder.encode(catJson, StandardCharsets.UTF_8.toString())
-                        navController.navigate("details/${encodedCatJson}")
+                        navController.navigate("details/${encodedCatJson}/${filteredCats[index]
+                            .isFavorite.value}/${filteredCats[index].favoriteID.value}")
                     }
                 ) {
                     Text(filteredCats[index].cat.breeds.first().name, Modifier.padding(16.dp))
