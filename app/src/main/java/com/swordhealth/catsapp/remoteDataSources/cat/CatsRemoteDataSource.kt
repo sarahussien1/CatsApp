@@ -1,7 +1,6 @@
 package com.swordhealth.catsapp.remoteDataSources.cat
 
 import android.content.Context
-import android.util.Log
 import com.swordhealth.catsapp.R
 import com.swordhealth.catsapp.models.Cat
 import com.swordhealth.catsapp.services.CatsApiService
@@ -26,11 +25,6 @@ class CatsRemoteDataSource @Inject constructor(
             return Resource.DataError(context.getString(R.string.no_internet_error))
         }
         val response = catsApiService.getCats(size, hasBreeds, order, page, limit)
-        response.body()?.let { body ->
-            for (item in body) {
-                Log.d("TAG", "TESST ${item.breeds}")
-            }
-        }
         return if (response.isSuccessful) {
             Resource.Success(response.body() as List<Cat>)
         } else {

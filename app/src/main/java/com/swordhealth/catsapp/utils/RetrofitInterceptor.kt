@@ -1,6 +1,5 @@
 package com.swordhealth.catsapp.utils
 
-import android.util.Log
 import okhttp3.Interceptor
 import okhttp3.Response
 
