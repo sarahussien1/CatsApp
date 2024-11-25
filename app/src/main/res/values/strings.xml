@@ -2,4 +2,11 @@
     <string name="app_name">CatsApp</string>
     <string name="no_internet_error">No internet connection</string>
     <string name="data_error">An error has been occurred</string>
+    <string name="life_span_is">Life span is</string>
+    <string name="remove_from_favorite">Remove from favorite</string>
+    <string name="add_to_favorite">Add to favorite</string>
+    <string name="search">Search</string>
+    <string name="home">Home</string>
+    <string name="favorites">Favorites</string>
+    <string name="cat_details">Cat details</string>
 </resources>

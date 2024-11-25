@@ -11,10 +11,12 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.google.gson.Gson
+import com.swordhealth.catsapp.R
 import com.swordhealth.catsapp.viewModels.CatsViewModel
 import com.swordhealth.catsapp.viewModels.FavoritesViewModel
 
@@ -30,10 +32,10 @@ fun CatsScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Home", fontWeight = FontWeight.Bold) },
+                title = { Text(stringResource(R.string.home), fontWeight = FontWeight.Bold) },
                 actions = {
                     IconButton(onClick = { navController.navigate("search") }) {
-                        Icon(Icons.Default.Search, contentDescription = "Search")
+                        Icon(Icons.Default.Search, contentDescription = stringResource(R.string.search))
                     }
                 }
             )

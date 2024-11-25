@@ -9,6 +9,7 @@
 package com.swordhealth.catsapp.models
 
 import com.google.gson.annotations.Expose
+import com.google.gson.annotations.SerializedName
 
 data class Breed (
     @Expose
@@ -21,4 +22,7 @@ data class Breed (
     val origin: String,
     @Expose
     val description: String,
+    @Expose
+    @SerializedName("life_span")
+    val lifeSpan: String
 )

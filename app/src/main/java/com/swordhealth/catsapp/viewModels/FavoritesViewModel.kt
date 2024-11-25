@@ -1,7 +1,6 @@
 package com.swordhealth.catsapp.viewModels
 
 import android.content.Context
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.swordhealth.catsapp.R
@@ -28,8 +27,10 @@ class FavoritesViewModel @Inject constructor(
     val toggleFavoriteFailure: SharedFlow<String?> = _toggleFavoriteFailure
     private val _notifyDataSetChanged = MutableStateFlow<Boolean>(false)
     val notifyDataSetChanged: StateFlow<Boolean> = _notifyDataSetChanged
+    private val _uiNotifySuccessEvent = MutableSharedFlow<Boolean>()
+    val uiNotifySuccessEvent: SharedFlow<Boolean> = _uiNotifySuccessEvent
 
-    fun toggleFavorite(catUi: CatUI) {
+    fun toggleFavorite(catUi: CatUI, notifyUiOnSuccess: Boolean = false) {
         viewModelScope.launch {
             val favoriteCurrentState = catUi.isFavorite.value
             reflectOnToggleButtonActionInstantly(catUi)
@@ -39,9 +40,7 @@ class FavoritesViewModel @Inject constructor(
                         .catch { e ->
                             e.printStackTrace()
                             _toggleFavoriteFailure.emit(context.getString(R.string.data_error))
-                            catUi.isFavorite.value = true
-                            catUi.favoriteID.value = id
-                            _notifyDataSetChanged.value = true
+                            clearButtonActionRemoveFavInFailure(catUi, id)
                         }
                         .collect { toggleActionResource ->
                             if (toggleActionResource.errorMessage != null) {
@@ -49,6 +48,10 @@ class FavoritesViewModel @Inject constructor(
                                 clearButtonActionRemoveFavInFailure(catUi, id)
                             } else {
                                 catUi.favoriteID.value = null
+                                if (notifyUiOnSuccess) {
+                                    _uiNotifySuccessEvent.emit(true)
+                                    _uiNotifySuccessEvent.emit(false)
+                                }
                             }
                         }
                 }
@@ -65,12 +68,17 @@ class FavoritesViewModel @Inject constructor(
                             clearButtonActionAddFavInFailure(catUi)
                         } else {
                             catUi.favoriteID.value = toggleActionResource.data?.id
+                            if (notifyUiOnSuccess) {
+                                _uiNotifySuccessEvent.emit(true)
+                                _uiNotifySuccessEvent.emit(false)
+                            }
                         }
                     }
             }
 
         }
     }
+
     private fun reflectOnToggleButtonActionInstantly(catUi: CatUI) {
         catUi.isFavorite.value = !catUi.isFavorite.value
         _notifyDataSetChanged.value = true

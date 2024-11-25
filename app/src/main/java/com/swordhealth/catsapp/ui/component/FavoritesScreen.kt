@@ -6,10 +6,12 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.google.gson.Gson
+import com.swordhealth.catsapp.R
 import com.swordhealth.catsapp.viewModels.CatsViewModel
 import com.swordhealth.catsapp.viewModels.FavoritesViewModel
 
@@ -23,7 +25,7 @@ fun FavoritesScreen(
     navController: NavController
 ) {
     Scaffold(
-        topBar = { TopAppBar(title = { Text("Favorites", fontWeight = FontWeight.Bold) }) }
+        topBar = { TopAppBar(title = { Text(stringResource(R.string.favorites), fontWeight = FontWeight.Bold) }) }
     ) { padding ->
         CatsList(
             catViewModel,

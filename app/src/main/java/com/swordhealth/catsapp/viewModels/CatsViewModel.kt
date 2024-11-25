@@ -10,7 +10,9 @@ import com.swordhealth.catsapp.utils.Constants
 import com.swordhealth.catsapp.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
@@ -24,8 +26,10 @@ class CatsViewModel @Inject constructor(
 
     private val _cats = MutableStateFlow<Resource<List<CatUI>>>(Resource.Loading())
     val cats: StateFlow<Resource<List<CatUI>>> = _cats
+    private val _uiNotifySuccessEvent = MutableSharedFlow<Boolean>()
+    val uiNotifySuccessEvent: SharedFlow<Boolean> = _uiNotifySuccessEvent
     val page = 0
-    val limit = 20
+    val limit = 50
 
     init {
         getCats()
@@ -49,16 +53,17 @@ class CatsViewModel @Inject constructor(
                 .catch { e ->
                     e.printStackTrace()
                     _cats.value = Resource.DataError(context.getString(R.string.data_error))
+                    _uiNotifySuccessEvent.emit(true)
                 }
                 .collect { catList ->
                     _cats.value = catList
+                    _uiNotifySuccessEvent.emit(true)
                 }
         }
     }
 
     fun notifyDataSetChanged() {
         notifyDataSetChangedCats()
-//        notifyDataSetChangedFavs()
     }
 
     private fun notifyDataSetChangedCats() {
@@ -66,14 +71,16 @@ class CatsViewModel @Inject constructor(
             _cats.value = Resource.Success(list)
         }
     }
-//    private fun notifyDataSetChangedFavs() {
-//        _filteredCats.value.data?.let { list ->
-//            _filteredCats.value = Resource.Success(list)
-//        }
-//    }
 
-    fun filterWithFavorites(catUIs: List<CatUI>): List<CatUI> {
+    fun filterWithFavorites(): List<CatUI> {
         return _cats.value.data?.filter { it.isFavorite.value } ?: listOf()
+    }
+
+    fun searchByPrefix(prefix: String): List<CatUI> {
+        if (prefix.isEmpty()){
+            return listOf()
+        }
+        return _cats.value.data?.filter { if (it.cat.breeds.isNotEmpty()) it.cat.breeds.first().name.lowercase().contains(prefix.lowercase()) else false } ?: listOf()
     }
 
 }

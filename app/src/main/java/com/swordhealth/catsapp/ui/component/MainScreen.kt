@@ -15,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.swordhealth.catsapp.viewModels.CatsViewModel
 import androidx.navigation.NavController
@@ -25,8 +26,8 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.google.gson.Gson
+import com.swordhealth.catsapp.R
 import com.swordhealth.catsapp.models.Cat
-import com.swordhealth.catsapp.ui.models.CatUI
 import com.swordhealth.catsapp.viewModels.FavoritesViewModel
 import java.net.URLDecoder
 import java.nio.charset.StandardCharsets
@@ -59,16 +60,20 @@ fun MainScreen(catViewModel: CatsViewModel,
                 context = context,
                 gson = gson,
                 navController = navController) }
-            composable("search") { SearchScreen() }
+            composable("search") {SearchScreen(navController, catViewModel) }
 
             composable(
-                "details/{catJson}",
-                arguments = listOf(navArgument("catJson") { type = NavType.StringType })
+                "details/{catJson}/{isFavorite}/{favoriteId}",
+                arguments = listOf(navArgument("catJson") { type = NavType.StringType },
+                    navArgument("isFavorite") { type = NavType.BoolType},
+                    navArgument("favoriteId") { nullable = true })
             ) { backStackEntry ->
                 val encodedCatJson = backStackEntry.arguments?.getString("catJson")
                 val catJson = URLDecoder.decode(encodedCatJson, StandardCharsets.UTF_8.toString())
                 val cat = gson.fromJson(catJson, Cat::class.java)
-                DetailsScreen(navController, cat)
+                val isFavorite = backStackEntry.arguments?.getBoolean("isFavorite") ?: false
+                val favoriteId = backStackEntry.arguments?.getString("favoriteId")?.toLongOrNull()
+                DetailsScreen(navController, cat, favoritesViewModel,  catViewModel = catViewModel, isFavorite = isFavorite, favoriteId = favoriteId)
             }
         }
     }
@@ -77,11 +82,11 @@ fun MainScreen(catViewModel: CatsViewModel,
 @Composable
 fun BottomNavBar(navController: NavController) {
     val items = listOf(
-        BottomNavItem("home", "Home", Icons.Default.Home),
-        BottomNavItem("favorites", "Favorites", Icons.Default.Favorite)
+        BottomNavItem("home", stringResource(R.string.home), Icons.Default.Home),
+        BottomNavItem("favorites", stringResource(R.string.favorites), Icons.Default.Favorite)
     )
     BottomNavigation(backgroundColor = Color.White, contentColor = Color.Black) {
-        val currentRoute = navController.currentBackStackEntryAsState()?.value?.destination?.route
+        val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
         items.forEach { item ->
             BottomNavigationItem(
                 icon = { Icon(item.icon, contentDescription = item.label) },

@@ -1,9 +1,9 @@
 package com.swordhealth.catsapp.ui.component
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -27,6 +27,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -34,24 +35,32 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.google.gson.Gson
+import com.swordhealth.catsapp.R
 import com.swordhealth.catsapp.ui.models.CatUI
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 
 @Composable
-fun CatItem(catUI: CatUI, onFavoriteToggle: () -> Unit, gson: Gson, navController: NavController) {
+fun CatItem(
+    catUI: CatUI,
+    onFavoriteToggle: () -> Unit,
+    gson: Gson,
+    navController: NavController,
+    favoriteOnly: Boolean
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .clickable {
                 val catJson = gson.toJson(catUI.cat)
                 val encodedCatJson = URLEncoder.encode(catJson, StandardCharsets.UTF_8.toString())
-                navController.navigate("details/${encodedCatJson}")
+                navController.navigate("details/${encodedCatJson}/${catUI
+                    .isFavorite.value}/${catUI.favoriteID.value}")
             }
             .padding(5.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        CardItem(catUI, onFavoriteToggle)
+        CardItem(catUI, onFavoriteToggle, favoriteOnly = favoriteOnly)
     }
 }
 
@@ -59,7 +68,8 @@ fun CatItem(catUI: CatUI, onFavoriteToggle: () -> Unit, gson: Gson, navControlle
 fun CardItem(
     catUI: CatUI,
     onFavoriteToggle: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    favoriteOnly: Boolean
 ) {
     Card(
         shape = RoundedCornerShape(16.dp),
@@ -93,17 +103,31 @@ fun CardItem(
             )
 
             // Title text on top of the image
-            Text(
-                text = if (catUI.cat.breeds.isNotEmpty()) catUI.cat.breeds.first().name else "",
-                style = TextStyle(
-                    color = Color.White,
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold
-                ),
+            Column(
                 modifier = Modifier
                     .align(Alignment.BottomStart)
                     .padding(16.dp)
-            )
+            ) {
+                Text(
+                    text = if (catUI.cat.breeds.isNotEmpty()) catUI.cat.breeds.first().name else "",
+                    style = TextStyle(
+                        color = Color.White,
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                )
+                if (favoriteOnly) {
+                    Text(
+                        text = if (catUI.cat.breeds.isNotEmpty()) "${stringResource(R.string.life_span_is)} ${catUI.cat.breeds.first().lifeSpan}" else "",
+                        style = TextStyle(
+                            color = Color.White,
+                            fontSize = 12.sp,
+                            fontWeight = FontWeight.Normal
+                        )
+                    )
+                }
+            }
+
 
             // Add to Favorite button
             IconButton(
@@ -117,7 +141,7 @@ fun CardItem(
             ) {
                 Icon(
                     imageVector = if (catUI.isFavorite.value) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
-                    contentDescription = if (catUI.isFavorite.value) "Remove from favorites" else "Add to favorites",
+                    contentDescription = if (catUI.isFavorite.value) stringResource(R.string.remove_from_favorite) else stringResource(R.string.add_to_favorite),
                     tint = if (catUI.isFavorite.value) Color.Red else Color.Gray,
                     modifier = Modifier.size(24.dp)
                 )
